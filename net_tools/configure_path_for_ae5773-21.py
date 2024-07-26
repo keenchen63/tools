@@ -38,11 +38,13 @@ def set_new_password(ssh, new_password):
     # 发送确认密码
     channel.send(new_password + '\n')
     print(f"发送1{new_password}")
+    time.sleep(2)
     output += channel.recv(1024).decode('utf-8')    
     print(output)    
     #output = execute_and_print(channel, new_password + '\n')  
     channel.send(new_password + '\n')  
-    print(f"发送2{new_password}")
+    print(f"发送2{new_password}")    
+    time.sleep(2)
     output += channel.recv(1024).decode('utf-8')    
     print(output)    
     return output
@@ -108,7 +110,7 @@ def main():
     username = "admin"
     initial_password = "admin@huawei.com"
     new_password = "ip6fuH!92K"
-    ip_subnet = ipaddress.ip_network('10.1.1.7/32')
+    ip_subnet = ipaddress.ip_network('10.1.1.8/32')
     ftp_user = "1"
     ftp_pwd = "1"
 
