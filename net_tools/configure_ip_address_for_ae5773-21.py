@@ -75,11 +75,11 @@ def find_ip_for_sn(sn, excel_file):
 # 配置设备IP地址的函数
 def configure_ip_address(channel, ip_address, ip_gateway, ip_mask):
     commands = [
-        "diagnose ap-address address-mode mode static",
-        f"diagnose ap-address ap-ipv4-address ipv4-address {ip_address} subnet-mask {ip_mask} gateway {ip_gateway}",
-        "diagnose ap-address ac-ipv4-list",
-        "ac-ip-list 172.31.161.240"
-        "emit"
+        "diagnose ap-address address-mode mode static"+'\n',
+        f"diagnose ap-address ap-ipv4-address ipv4-address {ip_address} subnet-mask {ip_mask} gateway {ip_gateway}"+'\n',
+        "diagnose ap-address ac-ipv4-list"+'\n',
+        "ac-ip-list 172.31.161.240"+'\n'
+        "emit"+'\n'
     ]
     for command in commands:
         execute_and_print(channel, command)    
