@@ -32,18 +32,20 @@ def execute_and_print(channel, command):
 # 设置新密码的函数
 def set_new_password(ssh, new_password):
     channel = ssh.invoke_shell()
-    time.sleep(1)
-    
+    time.sleep(1)    
     # 读取初始输出
     output = channel.recv(9999).decode('utf-8')
+    print(output)    
+    # 发送新密码
+    channel.send(new_password + '\n')
+    time.sleep(2)
+    output += channel.recv(1024).decode('utf-8')    
     print(output)
-    
-     # 发送新密码
-    output = execute_and_print(channel, new_password + '\n')
-        
     # 发送确认密码
-    output = execute_and_print(channel, new_password + '\n')
-    
+    channel.send(new_password + '\n')
+    time.sleep(2)
+    output += channel.recv(1024).decode('utf-8')    
+    print(output)
     return output
 
 # 获取设备SN号的函数
@@ -72,18 +74,17 @@ def find_ip_for_sn(sn, excel_file):
 
 # 配置设备IP地址的函数
 def configure_ip_address(channel, ip_address, ip_gateway, ip_mask):
-    # commands = [
-    #     "system-view",
-    #     "interface GE 0/0/1",
-    #     f"ip address {ip_address} 24",
-    #     "quit",
-    #     "quit",
-    #     "save",
-    #     "yes"
-    # ]
-    # for command in commands:
-    #     execute_and_print(channel, command)
-    print(f"The device IP is {ip_address} / {ip_gateway} / {ip_mask}")
+    commands = [
+        "diagnose ap-address address-mode mode static",
+        f"diagnose ap-address ap-ipv4-address ipv4-address {ip_address} subnet-mask {ip_mask} gateway {ip_gateway}",
+        "diagnose ap-address ac-ipv4-list",
+        "ac-ip-list 172.31.161.240"
+        "emit"
+    ]
+    for command in commands:
+        execute_and_print(channel, command)    
+    print(f"表格匹配IP为： {ip_address} / {ip_gateway} / {ip_mask}")
+    print(execute_and_print(channel, "diagnose ap-address query-ap-address-info"))
     return None
 
 def save_config(channel):
@@ -107,7 +108,37 @@ def process_device(ip, username, initial_password, new_password, excel_file):
             set_new_password(ssh, new_password)
             
             # 由于设备会自动断开连接，等待一段时间再重新连接
-            time.sleep(8)
+            time.sleep(6)
+                        #使用新密码重新连接
+            ssh = ssh_connect(ip, username, new_password)
+            channel = ssh.invoke_shell()
+            
+            # 获取设备的SN号
+            sn = get_sn(channel)
+            if sn:
+                print(f"Device {ip} SN: {sn}")
+                ip_address, ip_gateway, ip_mask = find_ip_for_sn(sn, excel_file)
+                if ip_address:
+                    print(f"Configuring IP Address: {ip_address} / {ip_gateway} / {ip_mask} for device {ip}")
+                    configure_ip_address(channel, ip_address, ip_gateway, ip_mask)
+                    ssh.close()
+
+                    try:
+                            
+                        ssh = ssh_connect(ip_address, username, new_password)
+                        channel = ssh.invoke_shell()
+
+                        save_config(channel)
+                    except Exception as e:
+                        print(f"Failed to save config {ip}: {e}")
+
+                else:
+                    print(f"SN {sn} not found in Excel file for device {ip}.")
+            else:
+                print(f"Failed to get SN for device {ip}")
+            
+            ssh.close()
+
         except:
 
             #使用新密码重新连接
@@ -153,7 +184,7 @@ def main():
     ip_range = range(1, 12)
 
 
-    with ThreadPoolExecutor(max_workers=10) as executor:  # 根据需要调整工作线程数
+    with ThreadPoolExecutor(max_workers=1) as executor:  # 根据需要调整工作线程数
         for i in ip_range:
             ip = f"{ip_base}{i}"
             executor.submit(process_device, ip, username, initial_password, new_password, excel_file)
