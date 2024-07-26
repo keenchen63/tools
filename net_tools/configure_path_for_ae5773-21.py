@@ -66,7 +66,9 @@ def upload_path(channel, ftp_user, ftp_pwd):
 def load_path(channel):
     execute_and_print(channel, "load-patch load-type run name AirEngineX773_V600R023SPH151.pat")
     time.sleep(1)
-    if "V600R023SPH151" in execute_and_print(channel, "disp patch/patch-infos/"):
+    if "V600R023SPH151" in channel.send("disp patch/patch-infos/"):
+        output += channel.recv(1024).decode('utf-8')
+        print(output)
         print("补丁加载成功")
     return None
         
