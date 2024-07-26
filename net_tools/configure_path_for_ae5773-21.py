@@ -99,7 +99,7 @@ def process_device(ip, username, initial_password, new_password, ftp_user, ftp_p
 def main():
     username = "admin"
     initial_password = "admin@huawei.com"
-    new_password = "Huawei@123"
+    new_password = "ip6fuH!92K"
     ip_subnet = ipaddress.ip_network('10.1.1.3/32')
     ftp_user = "1"
     ftp_pwd = "1"
