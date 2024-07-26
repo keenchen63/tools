@@ -148,12 +148,14 @@ def main():
     initial_password = "admin@huawei.com"
     new_password = "Huawei@123"
     excel_file = "sn_ip_mapping.xlsx"
-    ip_subnet = ipaddress.ip_network('192.168.1.196/32')
+    ip_subnet = ipaddress.ip_network('192.168.1.196/32')    
+    ip_base = "10.1.1."
+    ip_range = range(1, 12)
 
 
     with ThreadPoolExecutor(max_workers=10) as executor:  # 根据需要调整工作线程数
-        for i in ip_subnet:
-            ip = f"{i}"
+        for i in ip_range:
+            ip = f"{ip_base}{i}"
             executor.submit(process_device, ip, username, initial_password, new_password, excel_file)
 
 if __name__ == "__main__":
