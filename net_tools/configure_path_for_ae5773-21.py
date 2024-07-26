@@ -78,7 +78,7 @@ def load_path(channel):
         return None
     else:
         print("补丁V600R023SPH151已加载")
-        return None        
+        return "补丁加载成功"        
     
 def save_config(channel):
     commands = [
@@ -124,10 +124,12 @@ def main():
     ip_subnet = ipaddress.ip_network('10.1.1.9/32')
     ftp_user = "1"
     ftp_pwd = "1"
+    ip_base = "192.168.1."
+    ip_range = range(1, 255)  # 192.168.1.1 to 192.168.1.254
 
     with ThreadPoolExecutor(max_workers=10) as executor:  # 根据需要调整工作线程数
-        for i in ip_subnet:
-            ip = f"{i}"
+        for i in ip_range:
+            ip = f"{ip_base}{i}"
             executor.submit(process_device, ip, username, initial_password, new_password, ftp_user, ftp_pwd)
 
 if __name__ == "__main__":
