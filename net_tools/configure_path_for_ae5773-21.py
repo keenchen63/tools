@@ -36,7 +36,9 @@ def set_new_password(ssh, new_password):
      # 发送新密码
     output = execute_and_print(channel, new_password + '\n')        
     # 发送确认密码
+    print(f"发送1{new_password}")
     output = execute_and_print(channel, new_password + '\n')    
+    print(f"发送2{new_password}")
     return output
 
 # 配置上传补丁的函数
