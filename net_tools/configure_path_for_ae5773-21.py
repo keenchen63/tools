@@ -127,7 +127,7 @@ def main():
     ip_base = "10.1.1."
     ip_range = range(1, 12)
 
-    with ThreadPoolExecutor(max_workers=10) as executor:  # 根据需要调整工作线程数
+    with ThreadPoolExecutor(max_workers=1) as executor:  # 根据需要调整工作线程数
         for i in ip_range:
             ip = f"{ip_base}{i}"
             executor.submit(process_device, ip, username, initial_password, new_password, ftp_user, ftp_pwd)
