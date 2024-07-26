@@ -33,20 +33,16 @@ def set_new_password(ssh, new_password):
     # 读取初始输出
     output = channel.recv(9999).decode('utf-8')
     print(output)    
-     # 发送新密码
-    #output = execute_and_print(channel, new_password + '\n')        
+    # 发送新密码
+    channel.send(new_password + '\n')
+    time.sleep(2)
+    output += channel.recv(1024).decode('utf-8')    
+    print(output)
     # 发送确认密码
     channel.send(new_password + '\n')
-    print(f"发送1{new_password}")
     time.sleep(2)
     output += channel.recv(1024).decode('utf-8')    
-    print(output)    
-    #output = execute_and_print(channel, new_password + '\n')  
-    channel.send(new_password + '\n')  
-    print(f"发送2{new_password}")    
-    time.sleep(2)
-    output += channel.recv(1024).decode('utf-8')    
-    print(output)    
+    print(output)
     return output
 
 # 配置上传补丁的函数
@@ -95,6 +91,12 @@ def process_device(ip, username, initial_password, new_password, ftp_user, ftp_p
             set_new_password(ssh, new_password)            
             # 由于设备会自动断开连接，等待一段时间再重新连接
             time.sleep(8)
+            #使用新密码重新连接
+            ssh = ssh_connect(ip, username, new_password)
+            channel = ssh.invoke_shell()
+            if upload_path(channel, ftp_user, ftp_pwd):
+                load_path(channel)
+            ssh.close()
         except:
             #使用新密码重新连接
             ssh = ssh_connect(ip, username, new_password)
