@@ -34,10 +34,12 @@ def set_new_password(ssh, new_password):
     output = channel.recv(9999).decode('utf-8')
     print(output)    
      # 发送新密码
-    output = execute_and_print(channel, new_password + '\n')        
+    #output = execute_and_print(channel, new_password + '\n')        
     # 发送确认密码
+    channel.send(new_password + '\n')
     print(f"发送1{new_password}")
-    output = execute_and_print(channel, new_password + '\n')    
+    #output = execute_and_print(channel, new_password + '\n')  
+    channel.send(new_password + '\n')  
     print(f"发送2{new_password}")
     return output
 
