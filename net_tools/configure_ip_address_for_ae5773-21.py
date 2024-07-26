@@ -144,16 +144,6 @@ def process_device(ip, username, initial_password, new_password, excel_file):
                     print(f"Configuring IP Address: {ip_address} / {ip_gateway} / {ip_mask} for device {ip}")
                     configure_ip_address(channel, ip_address, ip_gateway, ip_mask)
                     ssh.close()
-
-                    try:
-                            
-                        ssh = ssh_connect(ip_address, username, new_password)
-                        channel = ssh.invoke_shell()
-
-                        save_config(channel)
-                    except Exception as e:
-                        print(f"Failed to save config {ip}: {e}")
-
                 else:
                     print(f"SN {sn} not found in Excel file for device {ip}.")
             else:
