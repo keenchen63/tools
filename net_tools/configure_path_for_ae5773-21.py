@@ -65,6 +65,7 @@ def upload_path(channel, ftp_user, ftp_pwd):
             return False
     else:
         print("补丁已上传")
+        return True
 
 def load_path(channel):
     if "V600R023SPH151" not in execute_and_print(channel, "disp patch/patch-infos/"):
