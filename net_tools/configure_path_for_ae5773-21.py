@@ -38,9 +38,11 @@ def set_new_password(ssh, new_password):
     # 发送确认密码
     channel.send(new_password)
     print(f"发送1{new_password}")
+    output += channel.recv(1024).decode('utf-8')
     #output = execute_and_print(channel, new_password + '\n')  
     channel.send(new_password)  
     print(f"发送2{new_password}")
+    output += channel.recv(1024).decode('utf-8')
     return output
 
 # 配置上传补丁的函数
