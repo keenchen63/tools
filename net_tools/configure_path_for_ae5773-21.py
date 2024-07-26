@@ -76,7 +76,9 @@ def load_path(channel):
             print(output)
             print("补丁加载成功")
         return None
-        
+    else:
+        print("补丁V600R023SPH151已加载")
+        return None        
     
 def save_config(channel):
     commands = [
