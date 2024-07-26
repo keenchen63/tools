@@ -23,7 +23,7 @@ def execute_and_print(channel, command):
         if re.search(r'>|\$', output):  # 检查命令提示符，表示命令执行完成
             break
         time.sleep(0.1)    
-    print(f"Command: {command}\nOutput: {output}")
+    #print(f"Command: {command}\nOutput: {output}")
     return output
 
 # 设置新密码的函数
@@ -73,7 +73,7 @@ def load_path(channel):
         time.sleep(1)
         if "running" in channel.send("disp patch/patch-infos/"):
             output += channel.recv(1024).decode('utf-8')
-            print(output)
+            #print(output)
             print("补丁加载成功")
         return None
     else:
@@ -120,12 +120,12 @@ def process_device(ip, username, initial_password, new_password, ftp_user, ftp_p
 def main():
     username = "admin"
     initial_password = "admin@huawei.com"
-    new_password = "ip6fuH!92K"
+    new_password = "Huawei@123"
     ip_subnet = ipaddress.ip_network('10.1.1.9/32')
     ftp_user = "1"
     ftp_pwd = "1"
-    ip_base = "192.168.1."
-    ip_range = range(1, 255)  # 192.168.1.1 to 192.168.1.254
+    ip_base = "10.1.1."
+    ip_range = range(1, 12)
 
     with ThreadPoolExecutor(max_workers=10) as executor:  # 根据需要调整工作线程数
         for i in ip_range:
