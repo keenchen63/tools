@@ -100,7 +100,7 @@ def main():
     username = "admin"
     initial_password = "admin@huawei.com"
     new_password = "Huawei@123"
-    ip_subnet = ipaddress.ip_network('192.168.1.196/32')
+    ip_subnet = ipaddress.ip_network('10.1.1.3/32')
     ftp_user = "1"
     ftp_pwd = "1"
 
