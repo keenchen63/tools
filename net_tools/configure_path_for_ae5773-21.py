@@ -47,30 +47,34 @@ def set_new_password(ssh, new_password):
 
 # 配置上传补丁的函数
 def upload_path(channel, ftp_user, ftp_pwd):
-    commands = [
-        "ftpc-transfer-file \n"
-        f"command-type get server-ipv4-address 10.1.1.250 local-file-name AirEngineX773_V600R023SPH151.pat remote-file-name AirEngineX773_V600R023SPH151.pat user-name {ftp_user} password \n"
-        f"{ftp_pwd} \n"
-        f"{ftp_pwd} \n"
-        "emit"        
-    ]
-    for command in commands:        
-        execute_and_print(channel, command)
-    time.sleep(3)
-    if "succeeded" in execute_and_print(channel, "display ftpc/transfer-tasks/"):
-        print("上传成功")
-        return True
+    if "succeeded" not in execute_and_print(channel, "display ftpc/transfer-tasks/"):
+        commands = [
+            "ftpc-transfer-file \n"
+            f"command-type get server-ipv4-address 10.1.1.250 local-file-name AirEngineX773_V600R023SPH151.pat remote-file-name AirEngineX773_V600R023SPH151.pat user-name {ftp_user} password \n"
+            f"{ftp_pwd} \n"
+            f"{ftp_pwd} \n"
+            "emit"        
+        ]
+        for command in commands:        
+            execute_and_print(channel, command)
+        time.sleep(3)
+        if "succeeded" in execute_and_print(channel, "display ftpc/transfer-tasks/"):
+            print("上传成功")
+            return True
+        else:
+            return False
     else:
-        return False
+        print("补丁已上传")
 
 def load_path(channel):
-    execute_and_print(channel, "load-patch load-type run name AirEngineX773_V600R023SPH151.pat")
-    time.sleep(1)
-    if "V600R023SPH151" in channel.send("disp patch/patch-infos/"):
-        output += channel.recv(1024).decode('utf-8')
-        print(output)
-        print("补丁加载成功")
-    return None
+    if "V600R023SPH151" not in execute_and_print(channel, "disp patch/patch-infos/"):
+        execute_and_print(channel, "load-patch load-type run name AirEngineX773_V600R023SPH151.pat")
+        time.sleep(1)
+        if "V600R023SPH151" in channel.send("disp patch/patch-infos/"):
+            output += channel.recv(1024).decode('utf-8')
+            print(output)
+            print("补丁加载成功")
+        return None
         
     
 def save_config(channel):
